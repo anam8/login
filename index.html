@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<title>Sistem Keuangan Puskermas (Muhammad Anam)</title>
+	<link rel="icon" type="image/png" href="favicon.png"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+.navbar-nav>li, .navbar-nav {float: left !important;}
+.pre{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background-color:#000;opacity:0.7;}
+.pre .loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:21px;color:white;}
+tr:hover,tr.selected{background-color: #D6EEEE;}
+</style>
+<body id="bodi">
+<div class="pre" style="display: none;">
+	<div class="loading">Loading</div>
+</div>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+ <div class="container">
+	<div id="mynavbar" style="display: none;">
+		<ul class="nav navbar-nav">
+		<li><a href="#" onclick="buka('kasir')"><span class="glyphicon glyphicon-tag"></span> Kasir</a></li>
+		<li><a href="#" onclick="buka('realisasi')"><span class="glyphicon glyphicon-star"></span> Realisasi</a></li>
+		<li><a href="#" onclick="buka('dpa')"><span class="glyphicon glyphicon-briefcase"></span> DPA</a></li>
+		<li><a href="#" onclick="buka('flogin')"><span class="glyphicon glyphicon-off"></span> Keluar</a></li>
+		</ul>
+	</div>
+ </div>
+</nav>
+
+<div class="container-fluid text-center">
+<div class="row content">
+
+	<div class="col-sm-2 sidenav"></div>
+
+	<div id="bag" class="col-sm-8 text-left" style="margin-top:50px">
+<div id="flogin" >
+<h1>Login (Muhammad Anam)</h1>
+<p>Masukkan username (123) dan password (123)</p>
+<div class="input-group">
+<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+<input id="b1" type="text" class="form-control" placeholder="Username" autofocus="">
+</div><br>
+
+<div class="input-group">
+<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+<input id="b2" type="password" class="form-control" placeholder="Password">
+<input type="hidden" id="b3"/>
+</div><br>
+
+<div align="center">
+	<button id="n" onclick="login()" class="btn btn-primary"><i class="glyphicon glyphicon-lock"></i> Login</button>
+	<a href="#" onclick="lupa()" class="btn btn-default">Lupa password</a>
+	<div id="isi"></div>
+</div>
+</div>
+<!-- kasir -->
+<div id="kasir" style="display: none;">
+<h1>Daftar Kas</h1>
+<p>
+Jenis:
+<select id="a5" class="form-control">
+	<option value="Pemasukan">Pemasukan</option>
+	<option value="Pengeluaran">Pengeluaran</option>
+</select>
+<br>
+Tanggal Entri: <input id="a1" type="date" class="form-control" autofocus="">
+<br>
+Poli ruangan:
+<select id="a2" class="form-control">
+	<option value="umum">umum</option>
+	<option value="gigi">gigi</option>
+	<option value="KIA">KIA</option>
+	<option value="laborat">laborat</option>
+	<option value="UGD">UGD</option>
+</select>
+<br>
+Nominal: <input id="a3" type="number" class="form-control">
+<br>
+Keterangan: <input id="a4" type="text" class="form-control">
+</p>
+<button id="tsimpankas" onclick="simpankas('kas')" class="btn btn-primary"><i class="glyphicon glyphicon-saved"></i> Tambah baru</button>
+<button id="teditkas" onclick="editkas()" class="btn btn-default">Edit</button>
+<button id="hapuskas" onclick="deleteRow('tabel','kuliah/kas')" class="btn btn-danger">Hapus</button>
+<button id="tjumlahkas" onclick="jumlahkas('tabel')" class="btn btn-default"><i class="glyphicon glyphicon-plus-sign"></i> Jumlah</button>
+<br><hr>
+<table class="table table-bordered" id="tabel" >
+<tbody>
+	<tr><th>Tanggal</th><th>Poli</th><th>Nominal</th><th>Keterangan</th><th>Status</th></tr>
+	<tr onclick="T(this)"><td>2024-08-01</td><td>gigi</td><td>1000</td><td></td><td>Pemasukan</td></tr>
+	<tr onclick="T(this)"><td>2024-08-02</td><td>umum</td><td>2000</td><td></td><td>Pengeluaran</td></tr>
+	<tr onclick="T(this)"><td>2024-08-03</td><td>KIA</td><td>3000</td><td></td><td>Pemasukan</td></tr>
+	<tr onclick="T(this)"><td>2024-08-04</td><td>laborat</td><td>4000</td><td></td><td>Pengeluaran</td></tr>
+	<tr onclick="T(this)"><td>2024-08-05</td><td>UGD</td><td>5000</td><td></td><td>Pemasukan</td></tr>
+</tbody>
+</table>
+<h4 id="Lkas"></h4>
+</div>
+<!-- realisasi -->
+<div id="realisasi" style="display: none;">
+<h1>Daftar Realisasi</h1>
+<p>
+Sumber dana:
+<select id="r5" class="form-control">
+	<option value="JKN">JKN</option>
+	<option value="BOK">BOK</option>
+	<option value="PAD-DAU">PAD-DAU</option>
+</select>
+<br>
+Tanggal Entri: <input id="r1" type="date" class="form-control" autofocus="">
+<br>
+Kode rekening:
+<input id="r2" type="text" class="form-control">
+<br>
+Uraian: <input id="r3" type="text" class="form-control">
+<br>
+Nominal: <input id="r4" type="number" class="form-control">
+</p>
+<button id="tsimpanreal" onclick="simpankas('real')" class="btn btn-primary"><i class="glyphicon glyphicon-saved"></i> Tambah baru</button>
+<button id="teditreal" onclick="editreal()" class="btn btn-default">Edit</button>
+<button id="hapusreal" onclick="deleteRow('tabelreal','kuliah/real')" class="btn btn-danger">Hapus</button>
+<button id="tjumlahreal" onclick="jumlahkas('tabelreal')" class="btn btn-default"><i class="glyphicon glyphicon-plus-sign"></i> Jumlah</button>
+<br><hr>
+<table class="table table-bordered" id="tabelreal" >
+	<tr><th>Tanggal</th><th>Kode rekening</th><th>Uraian</th><th>Nominal</th><th>Sumber dana</th></tr>
+	<tr onclick="T(this)"><td>2024-08-11</td><td>1</td><td>belanja</td><td>1000</td><td>JKN</td></tr>
+	<tr onclick="T(this)"><td>2024-08-12</td><td>2</td><td>operasional</td><td>2000</td><td>BOK</td></tr>
+	<tr onclick="T(this)"><td>2024-08-13</td><td>3</td><td>beli PC</td><td>3000</td><td>JKN</td></tr>
+	<tr onclick="T(this)"><td>2024-08-14</td><td>4</td><td>ATK</td><td>4000</td><td>JKN</td></tr>
+	<tr onclick="T(this)"><td>2024-08-15</td><td>5</td><td>bayar listrik</td><td>5000</td><td>BOK</td></tr>
+</table>
+<h4 id="Lreal"></h4>
+</div>
+<!-- DPA -->
+<div id="dpa" style="display: none;">
+<h1>DPA</h1>
+<p>
+Sumber dana JKN:<input id="d1" type="number" class="form-control">
+<br>
+Sumber dana BOK:<input id="d2" type="number" class="form-control">
+<br>
+Sumber dana PAD-DAU:<input id="d3" type="number" class="form-control">
+</p>
+<button onclick="simpandpa()" class="btn btn-primary"><i class="glyphicon glyphicon-saved"></i> Simpan</button>
+<br>
+</div>
+<!-- kosong -->
+<div id="ganti"></div>
+	</div>
+	<div class="col-sm-2 sidenav"></div>
+</div>
+</div>
+</body>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+<script >
+
+
+var tkas=""; var treal=""; var jkas=0; var jreal1=0; var jreal2=0; var jreal3=0; var baris=0; var statusedit=0;
+
+function buka(a){
+	if(navigator.onLine == false) {alert('Internet putus. Cek jaringan internet');}
+	$("#kasir").hide(500);$("#realisasi").hide(500);$("#dpa").hide(500);
+	$("#"+a).show(500);
+}
+
+function simpankas(a) {
+if(a=="kas"){
+	var tabel = document.getElementById("tabel");
+	var row = tabel.insertRow(1);
+	row.insertCell(0).innerHTML = a1.value;
+	row.insertCell(1).innerHTML = a2.value;
+	row.insertCell(2).innerHTML = a3.value;
+	row.insertCell(3).innerHTML = a4.value;
+	row.insertCell(4).innerHTML = a5.value;
+}
+else if(a=="real"){
+	var tabel = document.getElementById("tabelreal");
+	var row = tabel.insertRow(1);
+	row.insertCell(0).innerHTML = r1.value;
+	row.insertCell(1).innerHTML = r2.value;
+	row.insertCell(2).innerHTML = r3.value;
+	row.insertCell(3).innerHTML = r4.value;
+	row.insertCell(4).innerHTML = r5.value;
+	//treal +="|" + r1.value+"<>"+r2.value+"<>"+r3.value+"<>"+r4.value+"<>"+r5.value;	
+}
+alert("Data berhasil disimpan");
+}
+
+function editkas() {
+if(statusedit==0){
+	var aa=document.getElementById("tabel").rows[baris]
+	a1.value = aa.cells[0].innerHTML;
+	a2.value = aa.cells[1].innerHTML;
+	a3.value = aa.cells[2].innerHTML;
+	a4.value = aa.cells[3].innerHTML;
+	a5.value = aa.cells[4].innerHTML;
+	statusedit=1;
+	tsimpankas.disabled=true;
+	hapuskas.disabled=true;
+	document.getElementById("teditkas").innerHTML="Simpan edit";
+}
+else{
+var aa=document.getElementById("tabel").rows[baris]
+	aa.cells[0].innerHTML = a1.value;
+	aa.cells[1].innerHTML = a2.value;
+	aa.cells[2].innerHTML = a3.value;
+	aa.cells[3].innerHTML = a4.value;
+	aa.cells[4].innerHTML = a5.value;
+	statusedit=0;
+	tsimpankas.disabled=false;
+	hapuskas.disabled=false;
+	document.getElementById("teditkas").innerHTML="Edit";
+var aa=tabeltocsv("tabel");
+
+}
+}
+
+function editreal() {
+if(statusedit==0){
+	var aa=document.getElementById("tabelreal").rows[baris]
+	r1.value = aa.cells[0].innerHTML;
+	r2.value = aa.cells[1].innerHTML;
+	r3.value = aa.cells[2].innerHTML;
+	r4.value = aa.cells[3].innerHTML;
+	r5.value = aa.cells[4].innerHTML;
+	statusedit=1;
+	tsimpanreal.disabled=true;
+	hapusreal.disabled=true;
+	document.getElementById("teditreal").innerHTML="Simpan edit";
+}
+else{
+var aa=document.getElementById("tabelreal").rows[baris]
+	aa.cells[0].innerHTML = r1.value;
+	aa.cells[1].innerHTML = r2.value;
+	aa.cells[2].innerHTML = r3.value;
+	aa.cells[3].innerHTML = r4.value;
+	aa.cells[4].innerHTML = r5.value;
+	statusedit=0;
+	tsimpanreal.disabled=false;
+	hapusreal.disabled=false;
+	document.getElementById("teditreal").innerHTML="Edit";
+var aa=tabeltocsv("tabelreal");
+}
+}
+
+function deleteRow(a,b) {
+document.getElementById(a).deleteRow(baris);
+var aa=tabeltocsv(a);
+}
+
+function tabeltocsv(a){
+var otabel = document.getElementById(a);
+var obaris = otabel.getElementsByTagName("tr");
+var aa="";
+for(var x=0; x<obaris.length; x++)
+{
+	var kolom=obaris[x].getElementsByTagName("td");
+	for(var y=0; y<kolom.length; y++)
+	{
+		aa += kolom[y].innerHTML + "<>";
+		if(y==2 && kolom[4].innerHTML=="Pemasukan") {jkas += parseInt(kolom[2].innerHTML)}
+		else if(y==2 && kolom[4].innerHTML=="Pengeluaran"){jkas -= parseInt(kolom[2].innerHTML)}
+		
+		if(y==3 && kolom[4].innerHTML=="JKN"){jreal1 += parseInt(kolom[3].innerHTML)}
+		else if(y==3 && kolom[4].innerHTML=="BOK"){jreal2 += parseInt(kolom[3].innerHTML)}
+		else if(y==3 && kolom[4].innerHTML=="PAD-DAU"){jreal3 += parseInt(kolom[3].innerHTML)}
+	}
+	aa = aa.substring(0, aa.length-2);
+	aa += "|";
+}
+aa = aa.substring(1, aa.length-1);
+return aa;
+}
+
+function T(x){
+	if(statusedit==0){baris=x.rowIndex;
+		document.getElementById("hapuskas").innerHTML="Hapus baris ke "+baris;
+		document.getElementById("hapusreal").innerHTML="Hapus baris ke "+baris;
+	}
+}
+
+function jumlahkas(a) {
+if(a=="tabel"){jkas=0;}
+else{jreal1=0;jreal2=0;jreal3=0;}
+tabeltocsv(a);
+document.getElementById("Lkas").innerHTML="Jumlah= "+jkas;
+document.getElementById("Lreal").innerHTML="Jumlah JKN= "+jreal1+ ". Jumlah BOK= "+jreal2+ ". Jumlah PAD-DAU= "+jreal3;
+var jj=jkas+ "|" + jreal1+ "|" +(jreal1/d1.value*100)+ "|" + jreal2+ "|" +(jreal2/d2.value*100)+ "|" + jreal3+ "|" +(jreal3/d3.value*100);
+//Jumlahsumber = j1 & "|" & jp1 & "|" & j2 & "|" & jp2 & "|" & j3 & "|" & jp3
+}
+
+function buattabelreal(){
+var db=firebase.database().ref('kuliah/real/isi');
+db.on('value',showreal);
+}
+
+function showreal(items){
+treal=items.val();
+var array = []
+array = treal.split("|").map(function(e) {
+	return e.split("<>").map(String);
+})
+	var content = "<th>Tanggal</th><th>Kode rekening</th><th>Uraian</th><th>Nominal</th><th>Sumber dana</th>";
+	array.forEach(function(row) {
+		content += "<tr onclick=\"T(this)\">";
+		row.forEach(function(cell) {
+			content += "<td>" + cell + "</td>" ;
+		});
+		content += "</tr>";
+	});
+	document.getElementById("tabelreal").innerHTML = content;
+}
+
+function buattabelkas(){
+var db=firebase.database().ref('kuliah/kas/isi');
+db.on('value',showData);
+}
+
+function showData(items){
+
+tkas=items.val();
+
+var array = []
+array = tkas.split("|").map(function(e) {
+	return e.split("<>").map(String);
+})
+	var content = "<th>Tanggal</th><th>Poli</th><th>Nominal</th><th>Keterangan</th><th>Status</th>";
+	array.forEach(function(row) {
+		content += "<tr onclick=\"T(this)\">";
+		row.forEach(function(cell) {
+			content += "<td>" + cell + "</td>" ;
+		});
+		content += "</tr>";
+	});
+	document.getElementById("tabel").innerHTML = content;
+}
+
+function ambildpa(){
+var db=firebase.database().ref('kuliah/dpa/isi');
+db.on('value',showdpa);
+}
+function showdpa(items){
+var a=items.val();
+var array = a.split("|");
+		d1.value=array[0];
+		d2.value=array[1];
+		d3.value=array[2];
+}
+
+function simpandpa(){
+var a= d1.value+"|"+d2.value+"|"+d3.value;
+firebase.database().ref("kuliah/dpa").set({isi:a});
+alert("Berhasil disimpan");
+}
+
+function login(){
+	var a1= document.getElementById("b1").value;
+	var a2= document.getElementById("b2").value;
+	if(a1=="123" && a2=="123"){
+		$("#flogin").hide(500);$("#kasir").show(500);$("#mynavbar").show();
+	}
+	else{
+		alert("Username atau password salah")
+	}
+}
+
+
+function open(f,a)	{
+if(b1.value=="" || b2.value==""){
+	alert("Ada yang kosong");
+	b1.focus();
+	return (false);
+ }
+var a1= document.getElementById("b1").value;
+var a2= document.getElementById("b2").value;
+var a3= document.getElementById("b3").value;
+//var alamat=encodeURI(f+"?a1="+a1+"&a2="+a2+"&a3="+a3);
+var alamat=encodeURI(f);
+$("#"+a).load(alamat);
+document.getElementById("n").disabled= true;
+}
+
+function lupa()	{alert("username=123 password=123")}
+
+function nodeScriptReplace(node) {
+	if(nodeScriptIs(node) === true ){
+		node.parentNode.replaceChild(nodeScriptClone(node),node);
+	}
+	else{
+		var i = -1, children = node.childNodes;
+		while ( ++i < children.length ) {
+			nodeScriptReplace( children[i] );
+		}
+	}
+	return node;
+}
+function nodeScriptClone(node){
+	var script  = document.createElement("script");
+	script.text = node.innerHTML;
+	var i = -1, attrs = node.attributes, attr;
+	while( ++i < attrs.length ){
+		script.setAttribute((attr=attrs[i]).name,attr.value);
+	}
+	return script;
+}
+function nodeScriptIs(node){return node.tagName === 'SCRIPT';}
+
+function writeNewPost() {
+var newPostKey = firebase.database().ref().child('kuliah').key;
+var updates = {};
+updates['/kuliah/tabel'+newPostKey] = {huruf:789};
+
+return firebase.database().ref().update(updates);
+}
+
+function writeUserData(id,isi) {
+	firebase.database().ref(id).set({nilai:isi});
+}
+
+function refes(){
+	if(fres!=bdiv){$("#"+bdiv).hide();$("#"+bdiv).load(bdiv);$("#"+bdiv).fadeIn();fres=bdiv;}
+}
+
+history.pushState(null, null); window.addEventListener('popstate', function(event) { history.pushState(null, null); });
+window.addEventListener('beforeunload', (event) => {event.returnValue = 'Apakah anda yakin keluar ?';});
+</script>
+</html>
